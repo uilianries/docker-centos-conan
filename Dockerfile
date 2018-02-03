@@ -2,7 +2,8 @@ FROM centos:6.9
 
 # Add /usr/local as default path
 RUN printf "PATH=/usr/local/bin:${PATH}\\n" >> /etc/profile \
-    && printf "LD_LIBRARY_PATH=/usr/local/lib\\n" >> /etc/profile
+    && printf "LD_LIBRARY_PATH=/usr/local/lib\\n" >> /etc/profile \
+    source /etc/profile
 
 # Install development tools and PyLAP dependencies
 RUN yum update -y \
