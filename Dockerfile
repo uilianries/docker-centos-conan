@@ -12,7 +12,7 @@ RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/P
     && cd /tmp/Python-2.7.10 \
     && ./configure --prefix=/usr \
     && make \
-    && make install
+    && make install \
     && cd -
 
 # install Python pip
