@@ -1,10 +1,5 @@
 FROM centos:6.9
 
-# Add /usr/local as default path
-RUN printf "PATH=/usr/local/bin:${PATH}\\n" >> /etc/profile \
-    && printf "LD_LIBRARY_PATH=/usr/local/lib\\n" >> /etc/profile \
-    source /etc/profile
-
 # Install development tools and PyLAP dependencies
 RUN yum update -y \
     && yum install -y epel-release \
@@ -15,14 +10,14 @@ RUN yum update -y \
 RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz \
     && tar xzf /tmp/python-2.7.tar.gz -C /tmp \
     && cd /tmp/Python-2.7.10 \
-    && ./configure \
+    && ./configure --prefix=/usr/bin \
     && make \
     && make install \
     && cd -
 
 # install Python pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && python /tmp/get-pip.py --prefix=/usr/local
+    && python /tmp/get-pip.py --prefix=/usr/bin
 
 # Create conan user
 RUN useradd -ms /bin/bash conan \
