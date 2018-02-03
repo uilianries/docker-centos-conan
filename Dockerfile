@@ -8,9 +8,11 @@ RUN yum update -y \
 
 # Install Python 2.7
 RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz \
-    && tar xzf python-2.7.tar.gz -C /tmp \
+    && tar xzf /tmp/python-2.7.tar.gz -C /tmp \
+    && cd /tmp/Python-2.7.10 \
     && ./configure \
-    && make altinstall
+    && make \
+    && make install
 
 # install Python pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
