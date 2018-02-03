@@ -1,7 +1,8 @@
 FROM centos:6.9
 
-ENV PATH=/usr/local/bin:${PATH} \
-    LD_LIBRARY_PATH=/usr/local/lib
+# Add /usr/local as default path
+RUN printf "PATH=/usr/local/bin:${PATH}\\n" >> /etc/profile \
+    && printf "LD_LIBRARY_PATH=/usr/local/lib\\n" >> /etc/profile
 
 # Install development tools and PyLAP dependencies
 RUN yum update -y \
@@ -38,7 +39,7 @@ RUN sudo pip install -U pip \
 RUN timeout 2s conan_server || true
 
 # Install LDAP plugin at ~/.conan_server/plugin/authenticator
-RUN sudo pip install conan-ldap-authentication==0.2.0
+RUN sudo pip install conan-ldap-authentication==0.2.2
 
 # Set Conan server to run LDAP plugin
 RUN sed -i 's/# custom_authenticator: my_authenticator/custom_authenticator: ldap_authentication/g' ${HOME}/.conan_server/server.conf
