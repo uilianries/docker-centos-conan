@@ -10,13 +10,14 @@ RUN yum update -y \
 RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz \
     && tar xzf /tmp/python-2.7.tar.gz -C /tmp \
     && cd /tmp/Python-2.7.10 \
-    && ./configure \
+    && ./configure --prefix=/usr \
     && make \
     && make install
+    && cd -
 
 # install Python pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && python2.7 /tmp/get-pip.py
+    && python /tmp/get-pip.py --prefix=/usr
 
 # Create conan user
 RUN useradd -ms /bin/bash conan \
