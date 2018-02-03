@@ -17,7 +17,8 @@ RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/P
 
 # install Python pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && python /tmp/get-pip.py --prefix=/usr/bin
+    && python /tmp/get-pip.py \
+    && ln -s /usr/local/bin/pip /usr/bin/pip
 
 # Create conan user
 RUN useradd -ms /bin/bash conan \
