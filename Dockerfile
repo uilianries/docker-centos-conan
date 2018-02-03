@@ -1,40 +1,39 @@
 FROM centos:6.9
 
-# Install python 2.7 and PyLDAP dependencies
+# Install development tools and PyLAP dependencies
 RUN yum update -y \
-    && yum install -y centos-release-scl epel-release \
-    && yum install -y python27 openssl-devel openldap-devel libgsasl-devel sudo \
+    && yum install -y epel-release \
+    && yum install -y openssl-devel openldap-devel libgsasl-devel sudo wget \
     && yum groupinstall -y "Development tools"
+
+# Install Python 2.7
+RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz \
+    && tar xzf python-2.7.tar.gz -C /tmp \
+    && ./configure \
+    && make altinstall \
 
 # Create conan user
 RUN useradd -ms /bin/bash conan \
     && usermod -aG wheel conan \
     && printf "conan:conan" | chpasswd \
     && printf "conan ALL= NOPASSWD: ALL\\n" >> /etc/sudoers \
-
-# Change to user conan
-USER conan
-
-# Add python on PATH
-ENV LD_LIBRARY_PATH=/opt/rh/python27/root/usr/lib64/
-ENV PATH=/opt/rh/python27/root/usr/bin:${PATH}
-
-# Update python name
-RUN alias python=/opt/rh/python27/root/usr/bin/python2.7 \
-    && alias pip=/opt/rh/python27/root/usr/bin/pip2.7
+    && su - conan
 
 # Install conan
-RUN sudo pip install -U pip \
-    && sudo pip install conan==1.0.1 \
+RUN sudo pip2.7 install -U pip \
+    && sudo pip2.7 install conan==1.0.1 \
     && conan user
 
 # Create ~/.conan_server
 RUN timeout 2s conan_server || true
 
 # Install LDAP plugin at ~/.conan_server/plugin/authenticator
-RUN sudo pip install conan-ldap-authentication==0.2.0
+RUN sudo pip2.7 install conan-ldap-authentication==0.2.0
 
 # Set Conan server to run LDAP plugin
 RUN sed -i 's/# custom_authenticator: my_authenticator/custom_authenticator: ldap_authentication/g' ${HOME}/.conan_server/server.conf
+
+# Change to user conan
+USER conan
 
 CMD ["conan_server"]
