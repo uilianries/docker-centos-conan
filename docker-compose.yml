@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  centos-conan:
+    build: .
+    image: uilianries/centos-conan
+    container_name: centos-conan
+    ports:
+      - 9300:9300

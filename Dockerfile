@@ -1,23 +1,26 @@
 FROM centos:6.9
 
+ENV PATH=/usr/local/bin:${PATH} \
+    LD_LIBRARY_PATH=/usr/local/lib
+
 # Install development tools and PyLAP dependencies
 RUN yum update -y \
     && yum install -y epel-release \
-    && yum install -y openssl-devel openldap-devel libgsasl-devel sudo wget curl \
+    && yum install -y openssl-devel openldap-devel libgsasl-devel sudo wget curl sqlite-devel \
     && yum groupinstall -y "Development tools"
 
 # Install Python 2.7
 RUN wget -q -O /tmp/python-2.7.tar.gz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz \
     && tar xzf /tmp/python-2.7.tar.gz -C /tmp \
     && cd /tmp/Python-2.7.10 \
-    && ./configure --prefix=/usr \
+    && ./configure \
     && make \
     && make install \
     && cd -
 
 # install Python pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && python /tmp/get-pip.py --prefix=/usr
+    && python /tmp/get-pip.py
 
 # Create conan user
 RUN useradd -ms /bin/bash conan \
